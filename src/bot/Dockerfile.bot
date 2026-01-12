@@ -1,0 +1,17 @@
+FROM mcr.microsoft.com/playwright:v1.40.1-focal
+
+WORKDIR /app
+
+COPY package.json tsconfig.base.json ./
+COPY src/bot/package.json ./src/bot/
+
+RUN npm install
+
+COPY src/bot ./src/bot
+
+WORKDIR /app/src/bot
+
+# Install project dependencies
+RUN npm install
+
+CMD ["npm", "start"]

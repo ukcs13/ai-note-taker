@@ -1,0 +1,23 @@
+{
+  "name": "ai-note-taker",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "src/backend",
+    "src/frontend",
+    "src/bot"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm run dev -w src/backend\" \"npm run dev -w src/frontend\"",
+    "build": "npm run build --workspaces",
+    "migrate": "npm run migrate -w src/backend",
+    "studio": "npm run studio -w src/backend",
+    "bot": "npm run start -w src/bot",
+    "gen:auth": "npm run login -w src/bot"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "typescript": "^5.3.3",
+    "@types/node": "^20.11.0"
+  }
+}

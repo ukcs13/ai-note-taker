@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: ai-note-taker-db
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: ai_note_taker
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: always
+
+  backend:
+    build:
+      context: .
+      dockerfile: src/backend/Dockerfile.be
+    ports:
+      - "3000:3000"
+    depends_on:
+      - postgres
+    environment:
+      DATABASE_URL: postgres://user:password@postgres:5432/ai_note_taker?schema=public
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+    restart: always
+
+  bot:
+    build:
+      context: .
+      dockerfile: src/bot/Dockerfile.bot
+    depends_on:
+      - backend
+    environment:
+      BACKEND_URL: http://backend:3000
+      MEET_URL: ${MEET_URL}
+      HEADLESS: "true"
+    restart: on-failure
+
+volumes:
+  postgres_data:

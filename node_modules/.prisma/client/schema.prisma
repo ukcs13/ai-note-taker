@@ -1,0 +1,37 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Meeting {
+  id          String       @id @default(uuid())
+  meet_url    String
+  started_at  DateTime     @default(now())
+  ended_at    DateTime?
+  transcripts Transcript[]
+  summaries   Summary[]
+}
+
+model Transcript {
+  id         String   @id @default(uuid())
+  meeting_id String
+  speaker    String
+  text       String
+  timestamp  DateTime @default(now())
+  meeting    Meeting  @relation(fields: [meeting_id], references: [id])
+
+  @@index([meeting_id])
+  @@index([timestamp])
+}
+
+model Summary {
+  id         String   @id @default(uuid())
+  meeting_id String
+  content    String
+  created_at DateTime @default(now())
+  meeting    Meeting  @relation(fields: [meeting_id], references: [id])
+}
